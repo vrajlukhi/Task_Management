@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        header{
+            background-color: cadetblue;
+            padding: 10px 0px;
+        }
+        header nav ul{
+            display: flex;
+            justify-content: space-evenly;
+            list-style: none;
+        }
+        header nav ul li a{
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: white;
+            transition: all 0.5s;
+            text-transform: uppercase;
+        }
+        header nav ul li a:hover{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/user/admin">admin</a></li>
+                <li><a href="/user/user">user</a></li>
+                <li><a href="/task/addtask">add task</a></li>
+                <li><a href="/user/login">login</a></li>
+                <li><a href="/user/signup">signup</a></li>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html>
