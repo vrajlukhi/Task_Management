@@ -12,7 +12,9 @@ app.use(express.static(__dirname+"/public"))
 app.set("views",(__dirname+"/views"))
 app.use(cookie())
 
-
+app.get("/",(req,res)=>{
+    res.redirect("/user/signup")
+})
 app.use("/user",URoute)
 app.use("/task",BRoute)
 
