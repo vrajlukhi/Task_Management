@@ -15,6 +15,12 @@ app.use(cookie())
 app.get("/",(req,res)=>{
     res.redirect("/user/signup")
 })
+app.get("/user",(req,res)=>{
+    res.redirect("/user/signup")
+})
+app.get("/task",(req,res)=>{
+    res.redirect("/task/usertask")
+})
 app.use("/user",URoute)
 app.use("/task",BRoute)
 
