@@ -1,7 +1,7 @@
 const taskmodel = require("../models/task.schema")
 
 const addtaskui=(req,res)=>{
-    res.status(200).render("addtask")
+    res.render("addtask")
 }
 const addtask=async(req,res)=>{
     let data=await taskmodel.create(req.body)
@@ -17,12 +17,12 @@ const alltask=async(req,res)=>{
     res.json(data)
 }
 const updatetask=async(req,res)=>{
-    let{title , content , category , _id}=req.body
+    let{ _id}=req.body
     let data=await taskmodel.findByIdAndUpdate(_id,req.body)
     res.redirect("/user/user")
 }
 const adminupdate=async(req,res)=>{
-    let{title , content , category , _id}=req.body
+    let{ _id}=req.body
     let data=await taskmodel.findByIdAndUpdate(_id,req.body)
     res.redirect("/user/admin")
 }
@@ -43,7 +43,7 @@ const searchTasks = async (req, res) => {
         }
         res.json(data);  
     } catch (error) {
-        res.status(500).json({ error: "Error fetching tasks" });
+        res.json({ error: "Error fetching tasks" });
     }
 };
 module.exports={addtaskui,addtask,usertask,deltask,updatetask,adminupdate,alltask,searchTasks}

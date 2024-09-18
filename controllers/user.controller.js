@@ -2,21 +2,21 @@ const user = require("../models/user.schema")
 const jwt=require("jsonwebtoken")
 
 const signupui=async(req,res)=>{
-    res.status(200).render("signup")
+    res.render("signup")
 }
 const userui=async(req,res)=>{
-    res.status(200).render("user")
+    res.render("user")
 }
 const adminui=async(req,res)=>{
-    res.status(200).render("admin")
+    res.render("admin")
 }
 const signup=async(req,res)=>{
     let{email}=req.body
     let userdata=await user.findOne({email:email})
     if(!userdata){
         let newuser=await user.create(req.body)
-        res.status(200).cookie("role",newuser.role)
-        res.status(200).cookie("id",newuser._id)
+        res.cookie("role",newuser.role)
+        res.cookie("id",newuser._id)
         res.redirect("/user/login")
         console.log(newuser)
     }
@@ -25,7 +25,7 @@ const signup=async(req,res)=>{
     }
 }
 const loginui=async(req,res)=>{
-    res.status(200).render("login")
+    res.render("login")
 }
 const login=async(req,res)=>{
     let{email,password}=req.body
@@ -33,9 +33,9 @@ const login=async(req,res)=>{
     if(userdata){
         if(userdata.password==password){
             let token=jwt.sign({id:userdata._id},'pass')
-            res.status(200).cookie("role",userdata.role)
-            res.status(200).cookie("id",userdata._id)
-            res.status(200).cookie("token",token)
+            res.cookie("role",userdata.role)
+            res.cookie("id",userdata._id)
+            res.cookie("token",token)
             if(userdata.role=="admin"){
                 res.redirect("/user/admin")
             }
