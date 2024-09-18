@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Task Management</title>
     <style>
         * {
             margin: 0;
@@ -44,21 +44,13 @@
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
-            
-        }
-        #box {
             border: 2px solid black;
-            
             border-radius: 10px;
-            box-shadow:
-    inset 0 -3em 3em rgb(0 200 0 / 30%),
-    0 0 0 2px white,
-    0.3em 0.3em 1em rgb(200 0 0 / 60%);
+            box-shadow: inset 0 -3em 3em rgb(0 200 0 / 30%), 0 0 0 2px white, 0.3em 0.3em 1em rgb(200 0 0 / 60%);
         }
         .task-card {
             background: white;
             border-radius: 8px;
-            
             margin-bottom: 20px;
             padding: 20px;
             display: flex;
@@ -76,16 +68,6 @@
             font-size: 16px;
             color: #666;
         }
-        .user-info {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .user-info p {
-            margin-bottom: 5px;
-        }
         .task-card button {
             margin-top: 10px;
             padding: 10px;
@@ -99,121 +81,110 @@
         .task-card button:hover {
             background-color: #c82333;
         }
-        .task-card input[type="checkbox"] {
-            margin-right: 10px;
-        }
-    </style> 
+    </style>
 </head>
 <body>
     <%- include("nav") %>
     
+    <!-- Form for Updating Task -->
     <form action="/task/adminupdate" method="post">
-        <input type="text" name="title" id="title" placeholder="title">
-        <input type="text" name="content" id="content" placeholder="content">
-        <input type="text" name="category" id="category" placeholder="category">
-        <input type="text" name="_id" id="id" placeholder="id">
-        <input type="submit" name="" value="submit" id="btn">
+        <input type="text" name="title" id="title" placeholder="Title">
+        <input type="text" name="content" id="content" placeholder="Content">
+        <input type="text" name="category" id="category" placeholder="Category">
+        <input type="text" name="_id" id="id" placeholder="ID">
+        <input type="submit" value="Submit" id="btn">
     </form>
     
-    <input type="search" id="searchInput" placeholder="Enter category" />
+    <!-- Search by Category -->
+    <input type="search" id="searchInput" placeholder="Enter category">
     <button id="searchButton">Search</button>
+
     <div id="box"></div>
-</body>
-<script>
-    fetch("/task/alltask")
-    .then((res)=>res.json())
-    .then((data)=>{
-        display(data)
-    })
 
-    const searchButton = document.getElementById("searchButton");
+    <script>
+        // Fetch all tasks on page load
+        fetch("/task/alltask")
+        .then((res) => res.json())
+        .then((data) => display(data));
 
-// Event listener for search button
-searchButton.addEventListener("click", () => {
-  const searchQuery = document.getElementById("searchInput").value;
-  fetchTasks(searchQuery);
-});
+        // Search functionality
+        const searchButton = document.getElementById("searchButton");
+        searchButton.addEventListener("click", () => {
+            const searchQuery = document.getElementById("searchInput").value;
+            fetchTasks(searchQuery);
+        });
 
-const fetchTasks = (category) => {
-  const url = category
-    ?` /task/searchtask?category=${category}`
-    : "/task/searchtasks";  
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      search(data);  
-    })
-    .catch((error) => console.log(error));
-      };
-const search = (data) => {
-        document.getElementById("box").innerHTML = "";  
+        const fetchTasks = (category) => {
+            const url = category ? `/task/searchtask?category=${category}` : "/task/alltask";
+            fetch(url)
+            .then((res) => res.json())
+            .then((data) => search(data))
+            .catch((error) => console.error(error));
+        };
 
-        if (data.length === 0) {
-          document.getElementById("box").innerHTML = "<h3>No tasks found for the given category</h3>";
-          return;
-        }
-}
-
-    const display=(data)=>{
-        document.getElementById("box").innerHTML=""
-        data.map((ele)=>{
-            let title=document.createElement("h1")
-            title.innerHTML=`Title: ${ ele.title}`
-            let content=document.createElement("h4")
-            content.innerHTML=`content: ${ele.content}`
-            let category=document.createElement("p")
-            category.innerHTML=`category : ${ele.category}`
-            let checkbox = document.createElement("input");
-
-            let userInfo = document.createElement("div");
-            let username = document.createElement("p");
-            username.innerHTML = `Username: ${ele.userID.username}`;
-
-            let email = document.createElement("p");
-            email.innerHTML = `Email: ${ele.userID.email}`;
-
-            let role = document.createElement("p");
-            role.innerHTML = `Role: ${ele.userID.role}`;
-
-            userInfo.append(username, email, role);
-
-            checkbox.type = "checkbox";
-            checkbox.id = ele._id;
-            
-            const savedCheckboxState = localStorage.getItem(ele._id);
-            if (savedCheckboxState === "true") {
-                checkbox.checked = true;
+        const search = (data) => {
+            document.getElementById("box").innerHTML = "";
+            if (data.length === 0) {
+                document.getElementById("box").innerHTML = "<h3>No tasks found for the given category</h3>";
+                return;
             }
+            display(data);
+        };
 
-            checkbox.addEventListener("change", () => {
-                localStorage.setItem(ele._id, checkbox.checked);
-            });
-            let update = document.createElement("button")
-            update.innerHTML = "Update"
-            update.addEventListener("click",()=>{
-                 document.getElementById("title").value = ele.title
-                 document.getElementById("content").value = ele.content
-                 document.getElementById("category").value = ele.category
-                 document.getElementById("id").value = ele._id
-                 document.getElementById("btn").value = "Update";
+        // Display task cards
+        const display = (data) => {
+            document.getElementById("box").innerHTML = "";
+            data.forEach((task) => {
+                let taskCard = document.createElement("div");
+                taskCard.classList.add("task-card");
 
-           })
-            let del = document.createElement("button")
-            del.innerHTML = "Delete"
-            del.addEventListener("click", () => {
-                console.log(ele._id);
-                fetch(`/task/deltask/${ele._id}`, {
-                    method: "DELETE",
+                let title = document.createElement("h1");
+                title.innerText = `Title: ${task.title}`;
+                
+                let content = document.createElement("h4");
+                content.innerText = `Content: ${task.content}`;
+
+                let category = document.createElement("p");
+                category.innerText = `Category: ${task.category}`;
+
+                let userInfo = document.createElement("div");
+                userInfo.innerHTML = `<p>Username: ${task.userID.username}</p>
+                                      <p>Email: ${task.userID.email}</p>
+                                      <p>Role: ${task.userID.role}</p>`;
+
+                // Checkbox to mark task status, storing in localStorage
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = task._id;
+                checkbox.checked = localStorage.getItem(task._id) === "true";
+                checkbox.addEventListener("change", () => {
+                    localStorage.setItem(task._id, checkbox.checked);
                 });
+
+                // Update button pre-fills form
+                let update = document.createElement("button");
+                update.innerText = "Update";
+                update.addEventListener("click", () => {
+                    document.getElementById("title").value = task.title;
+                    document.getElementById("content").value = task.content;
+                    document.getElementById("category").value = task.category;
+                    document.getElementById("id").value = task._id;
+                    document.getElementById("btn").value = "Update";
+                });
+
+                // Delete button sends DELETE request
+                let del = document.createElement("button");
+                del.innerText = "Delete";
+                del.addEventListener("click", () => {
+                    fetch(`/task/deltask/${task._id}`, {
+                        method: "DELETE"
+                    }).then(() => location.reload());
+                });
+
+                taskCard.append(title, content, category, userInfo, checkbox, update, del);
+                document.getElementById("box").append(taskCard);
             });
-
-            let div=document.createElement("div")
-            div.append(title,content,category,userInfo,checkbox,update,del)
-            document.getElementById("box").append(div)
-        })
-        
-    }
-
-    fetchTasks();
-</script>
+        };
+    </script>
+</body>
 </html>

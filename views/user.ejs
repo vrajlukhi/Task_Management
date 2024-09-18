@@ -10,16 +10,22 @@
             padding: 0;
             box-sizing: border-box;
         }
-        header{
-            background-color: cadetblue;
-            padding: 10px 0px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
         }
-        header nav ul{
+        header {
+            background-color: cadetblue;
+            padding: 10px 0;
+            text-align: center;
+        }
+        header nav ul {
             display: flex;
             justify-content: space-evenly;
             list-style: none;
         }
-        header nav ul li a{
+        header nav ul li a {
             text-decoration: none;
             font-size: 20px;
             font-weight: 500;
@@ -28,32 +34,25 @@
             transition: all 0.5s;
             text-transform: uppercase;
         }
-        header nav ul li a:hover{
+        header nav ul li a:hover {
             color: black;
         }
         #box {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
-            
-        }
-        #box {
             border: 2px solid black;
-            
             border-radius: 10px;
-            box-shadow:
-    inset 0 -3em 3em rgb(0 200 0 / 30%),
-    0 0 0 2px white,
-    0.3em 0.3em 1em rgb(200 0 0 / 60%);
+            box-shadow: inset 0 -3em 3em rgb(0 200 0 / 30%), 0 0 0 2px white, 0.3em 0.3em 1em rgb(200 0 0 / 60%);
         }
         .task-card {
             background: white;
             border-radius: 8px;
-            
             margin-bottom: 20px;
             padding: 20px;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .task-card h1 {
             font-size: 22px;
@@ -66,16 +65,6 @@
         .task-card p {
             font-size: 16px;
             color: #666;
-        }
-        .user-info {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .user-info p {
-            margin-bottom: 5px;
         }
         .task-card button {
             margin-top: 10px;
@@ -93,85 +82,122 @@
         .task-card input[type="checkbox"] {
             margin-right: 10px;
         }
+        form {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            gap: 10px;
+        }
+        form input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+        form input[type="submit"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #searchInput {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+        #searchButton {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #searchButton:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/user/admin">admin</a></li>
-                <li><a href="/user/user">user</a></li>
-                <li><a href="/task/addtask">add task</a></li>
-                <li><a href="/user/login">login</a></li>
-                <li><a href="/user/signup">signup</a></li>
-            </ul>
-        </nav>
-    </header>
+    <%- include("nav") %>
+
     <form action="/task/updatetask" method="post">
-        <input type="text" name="title" id="title" placeholder="title">
-        <input type="text" name="content" id="content" placeholder="content">
-        <input type="text" name="category" id="category" placeholder="category">
-        <input type="text" name="_id" id="id" placeholder="id">
-        <input type="submit" name="" value="submit" id="btn">
+        <input type="text" name="title" id="title" placeholder="Title">
+        <input type="text" name="content" id="content" placeholder="Content">
+        <input type="text" name="category" id="category" placeholder="Category">
+        <input type="text" name="_id" id="id" placeholder="ID">
+        <input type="submit" value="Submit" id="btn">
     </form>
 
-    <input type="search" id="searchInput" placeholder="Enter category" />
-    <button id="searchButton">Search</button>
-
-    <h1>User Page</h1>
-    <div id="box">
+    <div style="text-align: center;">
+        <input type="search" id="searchInput" placeholder="Enter category">
+        <button id="searchButton">Search</button>
     </div>
 
-    
-</body>
+    <h1 style="text-align: center; margin-top: 20px;">User Page</h1>
+
+    <div id="box"></div>
+
     <script>
         fetch("/task/usertask")
-        .then((res)=>res.json())
-        .then((data)=>{
-            display(data)
-        })
+        .then((res) => res.json())
+        .then((data) => display(data));
 
         const searchButton = document.getElementById("searchButton");
 
-// Event listener for search button
-searchButton.addEventListener("click", () => {
-  const searchQuery = document.getElementById("searchInput").value;
-  fetchTasks(searchQuery);
-});
+        searchButton.addEventListener("click", () => {
+            const searchQuery = document.getElementById("searchInput").value;
+            fetchTasks(searchQuery);
+        });
 
-const fetchTasks = (category) => {
-  const url = category
-    ?` /task/searchtask?category=${category}`
-    : "/task/searchtasks";  
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      search(data);  
-    })
-    .catch((error) => console.log(error));
-      };
-const search = (data) => {
-        document.getElementById("box").innerHTML = "";  
+        const fetchTasks = (category) => {
+            const url = category ? `/task/searchtask?category=${category}` : "/task/searchtasks";
+            fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                search(data);
+            })
+            .catch((error) => console.log(error));
+        };
 
-        if (data.length === 0) {
-          document.getElementById("box").innerHTML = "<h3>No tasks found for the given category</h3>";
-          return;
-        }
-}
+        const search = (data) => {
+            document.getElementById("box").innerHTML = "";
 
-        const display=(data)=>{
-            document.getElementById("box").innerHTML=""
-            data.map((ele)=>{
-                let title=document.createElement("h1")
-                title.innerHTML=`Title: ${ ele.title}`
-                let content=document.createElement("h4")
-                content.innerHTML=`content: ${ele.content}`
-                let category=document.createElement("p")
-                category.innerHTML=`category : ${ele.category}`
+            if (data.length === 0) {
+                document.getElementById("box").innerHTML = "<h3>No tasks found for the given category</h3>";
+                return;
+            }
+
+            display(data);
+        };
+
+        const display = (data) => {
+            document.getElementById("box").innerHTML = "";
+
+            data.map((ele) => {
+                let taskCard = document.createElement("div");
+                taskCard.classList.add("task-card");
+
+                let title = document.createElement("h1");
+                title.innerHTML = `Title: ${ele.title}`;
+                let content = document.createElement("h4");
+                content.innerHTML = `Content: ${ele.content}`;
+                let category = document.createElement("p");
+                category.innerHTML = `Category: ${ele.category}`;
+
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.id = ele._id;
-                
+
                 const savedCheckboxState = localStorage.getItem(ele._id);
                 if (savedCheckboxState === "true") {
                     checkbox.checked = true;
@@ -180,30 +206,29 @@ const search = (data) => {
                 checkbox.addEventListener("change", () => {
                     localStorage.setItem(ele._id, checkbox.checked);
                 });
-                let update = document.createElement("button")
-            update.innerHTML = "Update"
-            update.addEventListener("click",()=>{
-                 document.getElementById("title").value = ele.title
-                 document.getElementById("content").value = ele.content
-                 document.getElementById("category").value = ele.category
-                 document.getElementById("id").value = ele._id
-                 document.getElementById("btn").value = "Update";
 
-           })
-                let del = document.createElement("button")
-                del.innerHTML = "Delete"
-                del.addEventListener("click", () => {
-                    console.log(ele._id);
+                let updateButton = document.createElement("button");
+                updateButton.innerHTML = "Update";
+                updateButton.addEventListener("click", () => {
+                    document.getElementById("title").value = ele.title;
+                    document.getElementById("content").value = ele.content;
+                    document.getElementById("category").value = ele.category;
+                    document.getElementById("id").value = ele._id;
+                    document.getElementById("btn").value = "Update";
+                });
+
+                let deleteButton = document.createElement("button");
+                deleteButton.innerHTML = "Delete";
+                deleteButton.addEventListener("click", () => {
                     fetch(`/task/deltask/${ele._id}`, {
                         method: "DELETE",
                     });
                 });
 
-                let div=document.createElement("div")
-                div.append(title,content,category,checkbox,update,del)
-                document.getElementById("box").append(div)
-            })
-        }
-        fetchTasks();
+                taskCard.append(title, content, category, checkbox, updateButton, deleteButton);
+                document.getElementById("box").append(taskCard);
+            });
+        };
     </script>
+</body>
 </html>

@@ -6,6 +6,7 @@ const Auth = (req, res, next) => {
     if (token) {
       let decode = jwt.verify(token, "pass");
       req.body.userID = decode.id
+      req.body.assignedTo=decode.id
       next();
     } else {
       res.redirect("/user/login");

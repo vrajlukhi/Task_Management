@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        header nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+        }
+
+        header nav ul li {
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        header nav ul li a:hover {
+            color: #ffdd57;
+        }
+
+        #box {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        #box div {
+            border: 2px solid black;
+            border-radius: 10px;
+            margin: 15px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 15px;
+            border-radius: 10px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s;
+        }
+
+        .task-card h1 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .task-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .task-card:hover {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-width: 768px) {
+            #box {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            #box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include("nav") %>
+    
+    <div id="box"></div>
+
+    <script>
+        fetch("/task/alltask")
+        .then((res) => res.json())
+        .then((data) => {
+            display(data);
+        });
+
+        const display = (data) => {
+            document.getElementById("box").innerHTML = "";
+            data.forEach((task) => {
+                let taskCard = document.createElement("div");
+                taskCard.classList.add("task-card");
+
+                let title = document.createElement("h1");
+                title.innerText = `Title: ${task.title}`;
+
+                let content = document.createElement("h4");
+                content.innerText = `Content: ${task.content}`;
+
+                taskCard.append(title, content);
+                document.getElementById("box").append(taskCard);
+
+                taskCard.addEventListener("click", () => {
+                    window.location.href = `/task/singleTask/${task._id}`;
+                });
+            });
+        };
+    </script>
+</body>
+</html>
