@@ -3,7 +3,6 @@ const connect = require("./config/db")
 const cookie=require("cookie-parser")
 const URoute = require("./routes/user.route")
 const BRoute = require("./routes/task.route")
-const path=require("path")
 const http=require("http")
 const socketio=require("socket.io")
 require("dotenv").config()
@@ -14,7 +13,6 @@ app.set("view engine","ejs")
 app.use(express.static(__dirname+"/public"))
 app.set("views",(__dirname+"/views"))
 app.use(cookie())
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const server = http.createServer(app);
 const io = socketio(server);
