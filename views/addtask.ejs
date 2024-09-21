@@ -112,6 +112,16 @@
                 <label for="duedate">Due Date</label>
                 <input type="date" id="duedate" name="duedate" required>
             </div>
+            <select name="status" default="Pending" id="status" >
+                <option value="Pending" >Pending</option>
+                <option value="In Progress" >In Progress</option>
+                <option value="Completed" >Completed</option>
+            </select><br><br>
+            <select name="priority" default="Medium" id="priority" > 
+                <option value="Low" >Low</option>
+                <option value="Medium" >Medium</option>
+                <option value="High" >High</option>
+            </select><br><br>
 
             <input type="submit" value="Add Task">
         </form>

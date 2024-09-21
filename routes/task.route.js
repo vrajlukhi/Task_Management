@@ -1,6 +1,7 @@
 const {Router}=require("express")
-const { addtaskui, addtask, usertask, deltask, alltask, updatetask, searchTasks, adminupdate, singletask, homeui, reviews } = require("../controllers/task.controller")
+const { addtaskui, addtask, usertask, deltask, alltask, updatetask, searchTasks, adminupdate, singletask, homeui, reviews, TasksPagination, getTasks, exportTasksToCSV, importTasksFromCSV, upload } = require("../controllers/task.controller")
 const { Auth, authorize } = require("../middleware/auth")
+const path=require("path")
 const BRoute=Router()
 
 BRoute.get("/addtask",addtaskui)
@@ -14,5 +15,9 @@ BRoute.get("/searchtask",searchTasks)
 BRoute.get("/singleTask/:id",singletask)
 BRoute.get("/home",homeui)
 BRoute.post("/:id/comment",Auth,reviews)
+BRoute.get("/pagination",TasksPagination)
+BRoute.get("/filter",getTasks)
+BRoute.get("/exportTask",exportTasksToCSV)
+BRoute.post("/importTask",upload.single("csvfile"),importTasksFromCSV)
 
 module.exports=BRoute
